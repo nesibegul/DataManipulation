@@ -1,0 +1,38 @@
+def contest(file_name):
+  # Kütük dosyasını aç ve satırlarını oku
+  with open(file_name, "r") as f:
+    lines = f.readlines()
+
+  # Yarışmacıların puanlarını tutmak için bir liste oluştur
+  scores = []
+  for line in lines:
+    # Satırdaki sayıları ayır ve integer'a dönüştür
+    score = [int(x) for x in line.split()]
+    # Puanları listeye ekle
+    scores.append(score)
+
+  # Puanları sütunlar halinde ayrıştır
+  scores_by_question = list(zip(*scores))
+
+  # Kazananları tutmak için bir liste oluştur
+  winners = []
+  # Her soru için en yüksek puanı bul
+  for question in scores_by_question:
+    # En yüksek puanı bul
+    max_score = max(question)
+    # Bu puana sahip olan yarışmacıları bul
+    winners_for_question = [i+1 for i, score in enumerate(question) if score == max_score]
+    # Kazananları listeye ekle
+    winners.extend(winners_for_question)
+
+  # Kazananları say
+  winner_count = {}
+  for winner in winners:
+    if winner in winner_count:
+      winner_count[winner] += 1
+    else:
+      winner_count[winner] = 1
+
+  # Kazananları ekrana yazdır
+  for winner, count in winner_count.items():
+    print(f"{winner}. Yarışmacı: {count} puan")

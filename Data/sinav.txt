@@ -1,0 +1,171 @@
+1. soru
+
+def robots_meet(x1, v1, x2, v2):
+  # Eğer v1 ve v2 aynı ise, aynı noktaya gelip gelme durumu x1 ve x2'ye göre belirlenir
+  if v1 == v2:
+    return x1 == x2
+
+  # Eğer v1 ve v2 farklı ise, t'yi hesapla
+  t = (x2 - x1) / (v1 - v2)
+
+  # Eğer t tam sayı ise, aynı noktaya gelirler
+  return (t == int(t) and t>0)
+
+
+
+
+2. soru
+def contest(file_name):
+  # Kütük dosyasını aç ve satırlarını oku
+  with open(file_name, "r") as f:
+    lines = f.readlines()
+
+  # Yarışmacıların puanlarını tutmak için bir liste oluştur
+  scores = []
+  for line in lines:
+    # Satırdaki sayıları ayır ve integer'a dönüştür
+    score = [int(x) for x in line.split()]
+    # Puanları listeye ekle
+    scores.append(score)
+
+  # Puanları sütunlar halinde ayrıştır
+  scores_by_question = list(zip(*scores))
+
+  # Kazananları tutmak için bir liste oluştur
+  winners = []
+  # Her soru için en yüksek puanı bul
+  for question in scores_by_question:
+    # En yüksek puanı bul
+    max_score = max(question)
+    # Bu puana sahip olan yarışmacıları bul
+    winners_for_question = [i+1 for i, score in enumerate(question) if score == max_score]
+    # Kazananları listeye ekle
+    winners.extend(winners_for_question)
+
+  # Kazananları say
+  winner_count = {}
+  for winner in winners:
+    if winner in winner_count:
+      winner_count[winner] += 1
+    else:
+      winner_count[winner] = 1
+
+  # Kazananları ekrana yazdır
+  for winner, count in winner_count.items():
+    print(f"{winner}. Yarışmacı: {count} puan")
+
+
+
+
+
+3. soru
+
+def get_ranks(ranklist, scores):
+  # Mevcut başarı listesini ve yeni oyuncunun puanlarını sırala
+  ranklist.sort(reverse=True)
+  scores.sort()
+
+  # Her puan için sıralamayı bul
+  for score in scores:
+    # Puanı başarı listesine ekle
+    ranklist.append(score)
+    # Başarı listesini tekrar sırala
+    ranklist.sort(reverse=True)
+    # Oyuncunun sırasını bul
+    rank = ranklist.index(score) + 1
+    # Sıralamayı ekrana yazdır
+    print(rank)
+
+def get_ranks(ranklist, scores):
+    ranks = []
+    for score in scores:
+        # Eğer yeni puan mevcut puan listesinde ilk sıradaysa
+        if score > ranklist[0]:
+            ranks.append(1)
+        # Eğer yeni puan mevcut puan listesinde son sıradaysa
+        elif score < ranklist[-1]:
+            ranks.append(len(ranklist)+1)
+        # Diğer durumlarda
+        else:
+            # Mevcut puan listesinde yeni puanın sıralamasını bul
+            rank = 1
+            for r in ranklist:
+                if score > r:
+                    break
+                rank += 1
+            ranks.append(rank)
+        # Yeniden sırala listeyi
+	for r in ranks:
+		print(r)
+        ranklist.append(score)
+        ranklist.sort(reverse=True)
+    return ranks
+
+
+
+
+ranklist = [100, 100, 50, 40, 40, 20, 10]
+scores = [5, 25, 50, 120]
+
+def update_ranklist(ranklist, scores):
+  # ranklist için sıralama değerlerini oluştur
+  ranks = []
+  for i, score in enumerate(ranklist):
+    # eğer aynı puanı paylaşan oyuncular varsa, aynı sıralamayı paylaşırlar
+    if score in ranklist[:i]:
+      ranks.append(ranks[-1])
+    else:
+      ranks.append(i+1)
+      
+  # yeni oyuncunun puanları için sıralamaları hesapla
+  new_ranks = []
+  for score in scores:
+    if score > min(ranklist):
+      # eğer yeni oyuncunun puanı mevcut puanların en düşüğünden daha yüksekse,
+      # en düşük sıralamanın bir üstünde olur
+      new_rank = ranks[-1] + 1
+    elif score in ranklist:
+      # eğer puan mevcut puanlar arasında varsa, aynı sıralamayı paylaşır
+      new_rank = ranks[ranklist.index(score)]
+    else:
+      # eğer puan mevcut puanların en yükseğinden daha düşükse,
+      # en yüksek sıralamanın bir altında olur
+      new_rank = ranks[0] - 1
+    new_ranks.append(new_rank)
+    
+  return new_ranks
+
+print(update_ranklist(ranklist, scores))
+# Çıktı: [6, 4, 2, 1]
+
+
+ranklist = [100, 100, 50, 40, 40, 20, 10]
+def calculate_rank(vector):
+    a={}
+    rank=1
+    vector.sort(reverse =True)
+    for num in vector:
+        if num not in a:
+            a[num]=rank
+            rank=rank+1
+    return[(i, a[i]) for i in vector]
+calculate_rank(ranklist)
+
+
+ranklist = [100, 100, 50, 40, 40, 20, 10]
+scores = [5, 25, 50, 120]
+def rank_scores(ranklist, scores):
+    scores.sort()
+    ranks = [a[1] for a in calculate_rank(ranklist)]
+    for score in scores:
+        if score in ranklist:
+            index = [a[1] for a in calculate_rank(ranklist) if score==a[0]]
+            print(index)
+        else:
+            ranklist2 = ranklist[:]
+            ranklist2.append(score)
+            ranks = calculate_rank(ranklist2)
+            my_rank = [a[1] for a in ranks if score==a[0]]
+            print(my_rank)
+            
+rank_scores(ranklist, scores)
