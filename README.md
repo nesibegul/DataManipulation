@@ -1,1 +1,1 @@
-# DataManipulation and data prepocessing on text data. Visualizations on the same data
+### Data Manipulation, data prepocessing and visualization on text and numeric data
